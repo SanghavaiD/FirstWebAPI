@@ -35,9 +35,16 @@ namespace FirstWebAPI.Controllers
                 ).ToList();
             return emplist;
         }
-        [HttpPut]
-        public List<Employee> AddEmployee(Employee emp)
+        [HttpGet("search/employee")]
+        public Employee EmployeeDetails(int id)
         {
+            Employee employee = _context.FindEmployeeById(id);
+            return employee;
+        }
+        [HttpPut]
+        public Employee AddEmployee([FromBody] Employee emp)
+        {
+            
             return _context.AddEmployees(emp);
         }
         [HttpPost]
@@ -45,16 +52,14 @@ namespace FirstWebAPI.Controllers
         {
             emp.EmployeeId = id;
             Employee savedemp=_context.UpdateEmployee(emp);
-            return savedemp;
-            
+            return savedemp;   
         }
-       
+
         [HttpDelete]
-        public Employee RemoveEmployee(int id, [FromBody]Employee emp)
+        public int DeleteEmployee(int id)
         {
-            emp.EmployeeId=id;
-            return _context.DeleteEmployees(emp);
+            _context.DeleteEmployee(id);
+            return id;
         }
-        
     }
 }
