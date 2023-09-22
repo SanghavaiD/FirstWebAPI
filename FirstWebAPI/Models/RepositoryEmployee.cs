@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using Microsoft.Data.SqlClient;
+using System.Diagnostics.Contracts;
 
 namespace FirstWebAPI.Models
 {
@@ -14,6 +15,13 @@ namespace FirstWebAPI.Models
             
             return _context.Employees.ToList() ;
         }
-        
+        public Employee UpdateEmployee(Employee updatedEmployee)
+        {
+
+            _context.Employees.Attach(updatedEmployee);
+            _context.SaveChanges();
+            return updatedEmployee;
+            
+        }
     }
 }
