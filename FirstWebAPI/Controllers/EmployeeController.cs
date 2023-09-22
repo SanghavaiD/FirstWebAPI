@@ -1,6 +1,8 @@
 ﻿using FirstWebAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FirstWebAPI.Controllers
 {
@@ -13,10 +15,30 @@ namespace FirstWebAPI.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public List<Employee> AllEmployee()
+        [HttpGet("/GetAll")]
+        public IEnumerable<EmpViewModels> AllEmployee()
         {
-            return _context.GetEmployees();
+            List<Employee> employees = _context.GetEmployees();
+            var emplist = (
+                from emp in employees
+                select new EmpViewModels()
+                {
+                    EmpID = emp.EmployeeId,
+                    FirstName = emp.FirstName,
+                    LastName = emp.LastName,
+                    Title = emp.Title,
+                    BirthDate = emp.BirthDate,
+                    HireDate =emp.HireDate,
+                    City = emp.City,
+                    ReportsTo =emp.ReportsTo
+                }
+                ).ToList();
+            return emplist;
+        }
+        [HttpPut]
+        public List<Employee> AddEmployee(Employee emp)
+        {
+            return _context.AddEmployees(emp);
         }
         [HttpPost]
         public Employee UpdateEmployee(int id, [FromBody]Employee emp)
@@ -24,6 +46,14 @@ namespace FirstWebAPI.Controllers
             emp.EmployeeId = id;
             Employee savedemp=_context.UpdateEmployee(emp);
             return savedemp;
+            
+        }
+       
+        [HttpDelete]
+        public Employee RemoveEmployee(int id, [FromBody]Employee emp)
+        {
+            emp.EmployeeId=id;
+            return _context.DeleteEmployees(emp);
         }
         
     }
