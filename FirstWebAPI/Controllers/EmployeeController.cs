@@ -58,7 +58,7 @@ namespace FirstWebAPI.Controllers
             };
             return _context.AddEmployees(emp);
         }
-        [HttpPut]
+        [HttpPut("/ModifyEmployee")]
         public int UpdateEmployee(int id, [FromBody]Employee emp)
         {
             emp.EmployeeId = id;
@@ -66,7 +66,7 @@ namespace FirstWebAPI.Controllers
             
         }
 
-        [HttpDelete]
+        [HttpDelete("/DeleteEmployee")]
         public int DeleteEmployee(int id)
         {
             _context.DeleteEmployee(id);

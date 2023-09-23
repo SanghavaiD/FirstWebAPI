@@ -79,6 +79,51 @@ namespace WebApiClientConsole
                 }
             }
         }
+        public static async Task UpdateEmployee(int id)
+        {
+            using(var client=new HttpClient())
+            {
+                client.BaseAddress = uri;
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                EmpViewModels empViewModels = new EmpViewModels()
+                {
+                    FirstName = "Sanghavai",
+                    LastName = "Bhuvaneswari",
+                    City = "Mumbai",
+                    BirthDate = new DateTime(2000, 01, 01),
+                    HireDate = new DateTime(2023, 01, 01),
+                    Title = "Manager"
+                };
+                var mycontent = JsonConvert.SerializeObject(empViewModels);
+                var buffer = Encoding.UTF8.GetBytes(mycontent);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                //HttpPut:
+
+                HttpResponseMessage response = await client.PutAsync($"ModifyEmployee?{id} ", byteContent);
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    await Console.Out.WriteLineAsync(response.StatusCode.ToString());
+                }
+            }
+        }
+        public static async Task DeleteEmployee(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = uri;
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                //HttpPost:
+                HttpResponseMessage response = await client.DeleteAsync($"DeleteEmployee?{id}");
+                response.EnsureSuccessStatusCode();
+                if (response.IsSuccessStatusCode)
+                {
+                    await Console.Out.WriteLineAsync(response.StatusCode.ToString());
+                }
+            }
+        }
     }
 }
 
