@@ -2,5 +2,8 @@
 using WebApiClientConsole;
 
 Console.WriteLine("API Client!");
-EmployeeAPIClient.CallGetEmployees().Wait();
+//EmployeeAPIClient.CallGetEmployees().Wait();
+//Console.ReadLine();
+EmployeeAPIClient.AddNewEmployee().Wait();
 Console.ReadLine();
+

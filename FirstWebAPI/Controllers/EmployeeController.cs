@@ -41,7 +41,7 @@ namespace FirstWebAPI.Controllers
             Employee employee = _context.FindEmployeeById(id);
             return employee;
         }
-        [HttpPut]
+        [HttpPost("/AddEmployee")]
         public int  AddEmployee([FromBody] Employee emp)
         {
             Employee employee = new Employee()
@@ -58,7 +58,7 @@ namespace FirstWebAPI.Controllers
             };
             return _context.AddEmployees(emp);
         }
-        [HttpPost]
+        [HttpPut]
         public int UpdateEmployee(int id, [FromBody]Employee emp)
         {
             emp.EmployeeId = id;
