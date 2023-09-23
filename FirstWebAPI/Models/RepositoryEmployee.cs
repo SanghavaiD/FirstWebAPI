@@ -1,4 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using System.Diagnostics.Contracts;
 
 namespace FirstWebAPI.Models
@@ -12,42 +14,70 @@ namespace FirstWebAPI.Models
         }
         public List<Employee> GetEmployees()
         {
-            return _context.Employees.ToList() ;
+            return _context.Employees.ToList();
         }
-        public Employee AddEmployees(Employee emp)
+        public int AddEmployees(Employee emp)
         {
-
+            Employee? foundEmp = _context.Employees.Find(emp.EmployeeId);
+            if (foundEmp != null)
+            {
+                throw new Exception("Failed to add Employess.Duplicate Id");
+            }
+            EntityState es = _context.Entry(emp).State;
+            Console.WriteLine($"EntityState B4Add:{es.GetDisplayName()}");
             _context.Employees.Add(emp);
-            _context.SaveChanges();
-            return emp;
+            es = _context.Entry(emp).State;
+            Console.WriteLine($"EntityState AfterAdd:{es.GetDisplayName()}");
+            int result = _context.SaveChanges();
+            es = _context.Entry(emp).State;
+            Console.WriteLine($"EntityState After SaveChanges:{es.GetDisplayName()}");
+            return result;
+
+            //_context.Employees.Add(emp);
+            //_context.SaveChanges();
+            //return emp;
         }
         public Employee FindEmployeeById(int id)
         {
+
             Employee employee = _context.Employees.Find(id);
             return employee;
+
         }
-        public Employee UpdateEmployee(Employee updatedEmployee)
+        public int UpdateEmployee(Employee updatedEmployee)
         {
+            EntityState es = _context.Entry(updatedEmployee).State;
+            Console.WriteLine($"EntityState B4Add:{es.GetDisplayName()}");
+            _context.Employees.Add(updatedEmployee);
+            es = _context.Entry(updatedEmployee).State;
+            Console.WriteLine($"EntityState AfterAdd:{es.GetDisplayName()}");
+            int result = _context.SaveChanges();
+            es = _context.Entry(updatedEmployee).State;
+            Console.WriteLine($"EntityState After SaveChanges:{es.GetDisplayName()}");
+            return result;
 
-            _context.Employees.Update(updatedEmployee);
-            _context.SaveChanges();
-            return updatedEmployee;
+            //_context.Employees.Update(updatedEmployee);
+            //_context.SaveChanges();
+            //return updatedEmployee;
         }
-        public void DeleteEmployee(int employeeId)
+        public int DeleteEmployee(int id)
         {
-            var employeeToDelete = _context.Employees.Find(employeeId);
-
-
-
-            if (employeeToDelete != null)
+            Employee empdelete = _context.Employees.Find(id);
+            EntityState es = EntityState.Detached;
+            int result = 0;
+            if (empdelete != null)
             {
-                _context.Employees.Remove(employeeToDelete);
-                _context.SaveChanges();
+                es = _context.Entry(empdelete).State;
+                Console.WriteLine($"EntityState before Delete:{es.GetDisplayName()}");
+                _context.Employees.Remove(empdelete);//dbcontext.entity."add" used to attach
+                es = _context.Entry(empdelete).State;
+                Console.WriteLine($"EntityState After Delete:{es.GetDisplayName()}");
+                result = _context.SaveChanges();
+                es = _context.Entry(empdelete).State;
+                Console.WriteLine($"EntityState After Save changes:{es.GetDisplayName()}");
             }
-            else
-            {
-                Console.WriteLine("Employee not exists");
-            }
+            return result;
         }
     }
 }
+

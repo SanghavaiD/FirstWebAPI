@@ -42,17 +42,28 @@ namespace FirstWebAPI.Controllers
             return employee;
         }
         [HttpPut]
-        public Employee AddEmployee([FromBody] Employee emp)
+        public int  AddEmployee([FromBody] Employee emp)
         {
-            
+            Employee employee = new Employee()
+            {
+                //EmployeeId=newEmployee.EmpId,
+                FirstName = emp.FirstName,
+                LastName = emp.LastName,
+                Title = emp.Title,
+                BirthDate = emp.BirthDate,
+                HireDate = emp.HireDate,
+                City = emp.City,
+                ReportsTo = emp.ReportsTo > 0 ? emp.ReportsTo : null
+
+            };
             return _context.AddEmployees(emp);
         }
         [HttpPost]
-        public Employee UpdateEmployee(int id, [FromBody]Employee emp)
+        public int UpdateEmployee(int id, [FromBody]Employee emp)
         {
             emp.EmployeeId = id;
-            Employee savedemp=_context.UpdateEmployee(emp);
-            return savedemp;   
+            return _context.UpdateEmployee(emp);
+            
         }
 
         [HttpDelete]
